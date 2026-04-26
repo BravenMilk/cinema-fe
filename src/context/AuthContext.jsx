@@ -37,21 +37,13 @@ export const AuthProvider = ({ children }) => {
     };
 
     const register = async (formData) => {
-        console.log("AuthContext: Starting register for", formData.email);
         try {
             const response = await registerApi(formData);
             if (response.data.success) {
-                const { user, token } = response.data.data;
-                console.log("AuthContext: Register success, updating state", { user, token });
-                setUser(user);
-                setToken(token);
-                localStorage.setItem('ACCESS_TOKEN', token);
-                localStorage.setItem('USER', JSON.stringify(user));
                 return { success: true };
             }
-            console.warn("AuthContext: Register failed with response", response.data);
+            return { success: false, message: response.data?.message || "Registration failed" };
         } catch (error) {
-            console.error("AuthContext: Register exception", error);
             return {
                 success: false,
                 message: error.response?.data?.message || "Registration failed"

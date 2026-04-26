@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Pagination from '../../../components/Common/Pagination.jsx';
 import { Plus, Search, Edit3, Trash2, Calendar, RefreshCcw, Loader2, PlayCircle, Clock, MapPin,ChevronLeft,ChevronRight} from 'lucide-react';
 import BaseModal from '../../../components/Common/BaseModal';
 import NotificationModal from '../../../components/Common/NotificationModal';
@@ -136,16 +137,16 @@ export default function ShowtimeManager() {
 
     return (
         <div className="p-6 md:p-10 min-h-screen">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-                <div className='flex flex-row gap-4 w-full md:w-auto'>
-                    <div className="w-full md:w-56">
+            <div className="flex flex-col gap-3 mb-10">
+                <div className='flex flex-col gap-3'>
+                    <div className="w-full">
                         <CustomSelect options={movies} value={movie_id} onChange={(val) => { setMovieId(val); setPage(1); }} placeholder="Filter Film" loading={loadingFilters}/>
                     </div>
-                    <div className="w-full md:w-56">
+                    <div className="w-full">
                         <CustomSelect options={halls} value={hall_id} onChange={(val) => { setHallId(val); setPage(1); }} placeholder="Filter Studio" loading={loadingFilters}/>
                     </div>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <button
                         onClick={refresh}
                         className="p-4 bg-white/5 border border-white/10 rounded-2xl text-slate-400 hover:text-white hover:bg-white/10 transition-all"
@@ -155,7 +156,7 @@ export default function ShowtimeManager() {
                     </button>
                     <button
                         onClick={openAddModal}
-                        className="flex items-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl transition-all shadow-xl shadow-indigo-600/20 uppercase tracking-widest text-[10px]"
+                        className="flex-1 flex items-center justify-center gap-3 px-6 py-4 text-white font-black rounded-2xl transition-all uppercase tracking-widest text-[10px]" style={{ background: '#e50914', boxShadow: '0 8px 24px rgba(229,9,20,0.2)' }} onMouseEnter={e => e.currentTarget.style.background = '#ff1a1a'} onMouseLeave={e => e.currentTarget.style.background = '#e50914'}
                     >
                         <Plus className="w-4 h-4" />
                         Tambah Jadwal
@@ -179,7 +180,7 @@ export default function ShowtimeManager() {
                             {loading && showtimes.length === 0 ? (
                                 <tr>
                                     <td colSpan="5" className="px-8 py-20 text-center">
-                                        <Loader2 className="w-10 h-10 text-indigo-500 animate-spin mx-auto mb-4" />
+                                        <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4" style={{ color: '#e50914' }} />
                                         <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest animate-pulse">Synchronizing Schedules...</p>
                                     </td>
                                 </tr>
@@ -201,7 +202,7 @@ export default function ShowtimeManager() {
                                                     {st.movie?.poster_url ? (
                                                         <img src={st.movie.poster_url} alt="Poster" className="w-full h-full object-cover" />
                                                     ) : (
-                                                        <PlayCircle className="w-6 h-6 text-indigo-500/50" />
+                                                        <PlayCircle className="w-6 h-6" style={{ color: 'rgba(229,9,20,0.4)' }} />
                                                     )}
                                                 </div>
                                                 <div className="flex flex-col gap-1">
@@ -209,7 +210,7 @@ export default function ShowtimeManager() {
                                                         {st.movie?.title || 'Unknown Movie'}
                                                     </span>
                                                     <div className="flex items-center gap-2 text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-                                                        <MapPin className="w-3 h-3 text-indigo-500" />
+                                                        <MapPin className="w-3 h-3" style={{ color: '#e50914' }} />
                                                         {st.hall?.name || 'Unknown Studio'}
                                                         <span className="text-slate-700 px-1">•</span>
                                                         {st.hall?.cinema?.name || 'N/A'}
@@ -219,7 +220,7 @@ export default function ShowtimeManager() {
                                         </td>
                                         <td className="px-8 py-6">
                                             <div className="flex flex-col gap-2">
-                                                <div className="flex items-center gap-2 text-[11px] font-black text-indigo-300 uppercase italic">
+                                                <div className="flex items-center gap-2 text-[11px] font-black text-white uppercase italic">
                                                     <Clock className="w-3.5 h-3.5" />
                                                     {formatDateTime(st.start_time).split(',')[1]}
                                                 </div>
@@ -237,7 +238,7 @@ export default function ShowtimeManager() {
                                             <div className="flex items-center justify-center gap-3">
                                                 <button
                                                     onClick={() => openEditModal(st)}
-                                                    className="p-3 bg-indigo-500/10 hover:bg-indigo-500 text-indigo-400 hover:text-white rounded-xl transition-all active:scale-90"
+                                                    className="p-3 rounded-xl transition-all active:scale-90" style={{ background: 'rgba(229,9,20,0.08)', color: '#e50914' }} onMouseEnter={e => { e.currentTarget.style.background = '#e50914'; e.currentTarget.style.color = '#fff'; }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(229,9,20,0.08)'; e.currentTarget.style.color = '#e50914'; }}
                                                 >
                                                     <Edit3 className="w-4 h-4" />
                                                 </button>
@@ -256,43 +257,7 @@ export default function ShowtimeManager() {
                     </table>
                 </div>
             </div>
-            <div className="p-8  flex flex-row items-center justify-center gap-6">
-                <div className="flex items-center gap-2">
-                    <button disabled={page === 1 || loading} onClick={() => setPage(page - 1)} className="p-3 bg-white/5 border border-white/50 rounded-xl text-slate-400 hover:text-white hover:bg-indigo-600 disabled:opacity-10 disabled:hover:bg-white/5 transition-all group">
-                            <ChevronLeft className="w-4 h-4 group-active:-translate-x-1 transition-transform" />
-                    </button>
-                    <div className="hidden md:flex items-center gap-2 bg-black/20 p-1.5 rounded-2xl border border-white/5">
-                        {[...Array(meta.last_page)].map((_, i) => {
-                            const pageNum = i + 1;
-                            if (
-                                pageNum === 1 || 
-                                pageNum === meta.last_page || 
-                                (pageNum >= page - 1 && pageNum <= page + 1)
-                            ) {
-                                return (
-                                    <button
-                                        key={pageNum}
-                                        onClick={() => setPage(pageNum)}
-                                        className={`w-10 h-10 rounded-xl text-[10px] font-black transition-all ${
-                                            page === pageNum
-                                                ? 'bg-white/50 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)]'
-                                                : 'text-slate-500 hover:text-white hover:bg-white/5'
-                                        }`}
-                                    >
-                                        {pageNum}
-                                    </button>
-                                );
-                            } else if (pageNum === page - 2 || pageNum === page + 2) {
-                                return <span key={pageNum} className="text-slate-700">...</span>;
-                            }
-                            return null;
-                        })}
-                    </div>
-                    <button disabled={page >= meta.last_page || loading} onClick={() => setPage(page + 1)} className="p-3 bg-white/5 border border-white/50 rounded-xl text-slate-400 hover:text-white hover:bg-indigo-600 disabled:opacity-10 disabled:hover:bg-white/5 transition-all group">
-                        <ChevronRight className="w-4 h-4 group-active:translate-x-1 transition-transform" />
-                    </button>
-                </div>
-            </div>
+            <Pagination page={page} lastPage={meta.last_page} onPageChange={setPage} loading={loading} />
 
             <BaseModal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} title={selectedShowtime ? 'Edit Jadwal Tayang' : 'Buat Jadwal Baru'} maxWidth="max-w-2xl">
                 <ShowtimeForm initialData={selectedShowtime} onSubmit={onFormSubmit} onCancel={() => setIsFormOpen(false)} loading={loading}/>

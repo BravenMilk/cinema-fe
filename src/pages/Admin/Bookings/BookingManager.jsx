@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Pagination from '../../../components/Common/Pagination.jsx';
 import { Search, RefreshCcw, Loader2, Ticket, Calendar, FileBarChart, Download, ChevronLeft, ChevronRight } from 'lucide-react';
 import BaseModal from '../../../components/Common/BaseModal';
 import NotificationModal from '../../../components/Common/NotificationModal';
@@ -38,70 +39,67 @@ export default function BookingManager() {
         }
     };
 
-    const inputStyle = {
-        background: 'rgba(255,255,255,0.04)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        color: '#e50914',
-        borderRadius: '12px',
-        padding: '16px',
-        fontSize: '10px',
-        fontWeight: 900,
-        textTransform: 'uppercase',
-        outline: 'none'
-    };
-
     return (
         <div className="p-6 md:p-10 min-h-screen">
-            <div className="flex justify-between mb-8 gap-4 flex-wrap">
-                <div className="flex flex-row gap-4">
-                    <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors" style={{ color: '#555555' }} />
-                        <input type="text" placeholder="Cari kode booking..." value={searchInput}
-                            onChange={(e) => setSearchInput(e.target.value)}
-                            className="pl-12 pr-4 py-4 rounded-xl text-xs font-medium text-white focus:outline-none transition-all"
-                            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
-                            onFocus={e => { e.target.style.borderColor = 'rgba(229,9,20,0.5)'; e.target.style.boxShadow = '0 0 0 3px rgba(229,9,20,0.08)'; }}
-                            onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.08)'; e.target.style.boxShadow = 'none'; }} />
-                    </div>
-                    <div className="md:w-56">
-                        <CustomSelect
-                            options={[
-                                { id: "", name: "Semua Status" },
-                                { id: "paid", name: "PAID - Pembayaran Berhasil" },
-                                { id: "pending", name: "PENDING - Menunggu Bayar" },
-                                { id: "expired", name: "EXPIRED - Kadaluarsa" },
-                                { id: "failed", name: "FAILED - Gagal" },
-                            ]}
-                            value={status}
-                            onChange={(val) => { setStatus(val); setPage(1); }}
-                            placeholder="Status Transaksi"
-                        />
-                    </div>
+            {/* Toolbar — semua stack vertikal di mobile */}
+            <div className="flex flex-col gap-3 mb-8">
+                {/* Search */}
+                <div className="relative w-full">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#555555' }} />
+                    <input type="text" placeholder="Cari kode booking..." value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        className="w-full pl-12 pr-4 py-4 rounded-xl text-xs font-medium text-white focus:outline-none transition-all"
+                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                        onFocus={e => { e.target.style.borderColor = 'rgba(229,9,20,0.5)'; e.target.style.boxShadow = '0 0 0 3px rgba(229,9,20,0.08)'; }}
+                        onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.08)'; e.target.style.boxShadow = 'none'; }} />
                 </div>
 
-                <div className="flex flex-row gap-4">
-                    <div className="flex gap-2">
-                        <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} style={inputStyle} />
-                        <div className="flex items-center" style={{ color: '#555555' }}>to</div>
-                        <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} style={inputStyle} />
-                    </div>
-                    <div className="flex flex-wrap items-center gap-4">
-                        <button onClick={refresh}
-                            className="p-4 rounded-2xl transition-all"
-                            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#a0a0a0' }}
-                            onMouseEnter={e => { e.currentTarget.style.color = '#ffffff'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
-                            onMouseLeave={e => { e.currentTarget.style.color = '#a0a0a0'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; }}
-                            title="Refresh Data">
-                            <RefreshCcw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
-                        </button>
-                        <button onClick={handleOpenRecap}
-                            className="flex items-center gap-3 px-6 py-4 font-black rounded-2xl transition-all uppercase tracking-widest text-xs"
-                            style={{ background: '#e50914', color: '#ffffff', boxShadow: '0 8px 24px rgba(229,9,20,0.2)' }}
-                            onMouseEnter={e => e.currentTarget.style.background = '#ff1a1a'}
-                            onMouseLeave={e => e.currentTarget.style.background = '#e50914'}>
-                            <FileBarChart className="w-4 h-4" />
-                        </button>
-                    </div>
+                {/* Status filter */}
+                <CustomSelect
+                    options={[
+                        { id: "", name: "Semua Status" },
+                        { id: "paid", name: "PAID - Pembayaran Berhasil" },
+                        { id: "pending", name: "PENDING - Menunggu Bayar" },
+                        { id: "expired", name: "EXPIRED - Kadaluarsa" },
+                        { id: "failed", name: "FAILED - Gagal" },
+                    ]}
+                    value={status}
+                    onChange={(val) => { setStatus(val); setPage(1); }}
+                    placeholder="Status Transaksi"
+                />
+
+                {/* Date range */}
+                <div className="flex items-center gap-2">
+                    <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
+                        className="flex-1 py-3.5 px-4 rounded-xl text-xs font-bold focus:outline-none transition-all"
+                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#e50914' }}
+                        onFocus={e => e.target.style.borderColor = 'rgba(229,9,20,0.4)'}
+                        onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'} />
+                    <span className="text-xs font-bold flex-shrink-0" style={{ color: '#444444' }}>—</span>
+                    <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)}
+                        className="flex-1 py-3.5 px-4 rounded-xl text-xs font-bold focus:outline-none transition-all"
+                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#e50914' }}
+                        onFocus={e => e.target.style.borderColor = 'rgba(229,9,20,0.4)'}
+                        onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'} />
+                </div>
+
+                {/* Refresh + Recap */}
+                <div className="flex items-center gap-3">
+                    <button onClick={refresh}
+                        className="p-4 rounded-2xl transition-all flex-shrink-0"
+                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#a0a0a0' }}
+                        onMouseEnter={e => { e.currentTarget.style.color = '#ffffff'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.color = '#a0a0a0'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; }}
+                        title="Refresh Data">
+                        <RefreshCcw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
+                    </button>
+                    <button onClick={handleOpenRecap}
+                        className="flex-1 flex items-center justify-center gap-2 py-4 font-black rounded-2xl transition-all uppercase tracking-widest text-xs"
+                        style={{ background: '#e50914', color: '#ffffff', boxShadow: '0 8px 24px rgba(229,9,20,0.2)' }}
+                        onMouseEnter={e => e.currentTarget.style.background = '#ff1a1a'}
+                        onMouseLeave={e => e.currentTarget.style.background = '#e50914'}>
+                        <FileBarChart className="w-4 h-4" /> Rekap Penjualan
+                    </button>
                 </div>
             </div>
 
@@ -182,41 +180,7 @@ export default function BookingManager() {
             </div>
 
             {/* Pagination */}
-            <div className="p-8 flex flex-row items-center justify-center gap-6">
-                <div className="flex items-center gap-2">
-                    <button disabled={page === 1 || loading} onClick={() => setPage(page - 1)}
-                        className="p-3 rounded-xl transition-all disabled:opacity-20"
-                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#a0a0a0' }}
-                        onMouseEnter={e => { if (page !== 1) { e.currentTarget.style.background = '#e50914'; e.currentTarget.style.color = '#ffffff'; } }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = '#a0a0a0'; }}>
-                        <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <div className="hidden md:flex items-center gap-2 p-1.5 rounded-2xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                        {[...Array(meta.last_page)].map((_, i) => {
-                            const pageNum = i + 1;
-                            if (pageNum === 1 || pageNum === meta.last_page || (pageNum >= page - 1 && pageNum <= page + 1)) {
-                                return (
-                                    <button key={pageNum} onClick={() => setPage(pageNum)}
-                                        className="w-10 h-10 rounded-xl text-xs font-black transition-all"
-                                        style={page === pageNum ? { background: '#e50914', color: '#ffffff' } : { color: '#555555' }}>
-                                        {pageNum}
-                                    </button>
-                                );
-                            } else if (pageNum === page - 2 || pageNum === page + 2) {
-                                return <span key={pageNum} style={{ color: '#333333' }}>...</span>;
-                            }
-                            return null;
-                        })}
-                    </div>
-                    <button disabled={page >= meta.last_page || loading} onClick={() => setPage(page + 1)}
-                        className="p-3 rounded-xl transition-all disabled:opacity-20"
-                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#a0a0a0' }}
-                        onMouseEnter={e => { if (page < meta.last_page) { e.currentTarget.style.background = '#e50914'; e.currentTarget.style.color = '#ffffff'; } }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = '#a0a0a0'; }}>
-                        <ChevronRight className="w-4 h-4" />
-                    </button>
-                </div>
-            </div>
+            <Pagination page={page} lastPage={meta.last_page} onPageChange={setPage} loading={loading} />
 
             <BaseModal isOpen={isRecapOpen} onClose={() => setIsRecapOpen(false)} title="Sales Recapitulation" maxWidth="max-w-xl">
                 <div className="space-y-8 py-4">
@@ -237,7 +201,6 @@ export default function BookingManager() {
                                     <span className="text-2xl font-black text-white">{formatCurrency(recapData.data.total_sales)}</span>
                                 </div>
                             </div>
-
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between px-2">
                                     <h3 className="text-xs font-black uppercase tracking-widest" style={{ color: '#e50914' }}>Periode Laporan</h3>
@@ -245,7 +208,6 @@ export default function BookingManager() {
                                         {recapData.data.period}
                                     </span>
                                 </div>
-
                                 <div className="p-8 rounded-2xl flex flex-col items-center gap-6" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
                                     <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{ background: 'rgba(229,9,20,0.1)', border: '1px solid rgba(229,9,20,0.2)' }}>
                                         <Download className="w-8 h-8" style={{ color: '#e50914' }} />
@@ -285,7 +247,6 @@ export default function BookingManager() {
                     ) : (
                         <div className="py-10 text-center italic" style={{ color: '#555555' }}>Gagal memuat rekap data.</div>
                     )}
-
                     <div className="pt-2">
                         <button onClick={() => setIsRecapOpen(false)}
                             className="w-full py-4 font-bold rounded-2xl uppercase tracking-widest text-xs transition-all"

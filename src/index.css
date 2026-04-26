@@ -169,3 +169,13 @@ body {
 
 /* Page transition */
 .page-enter { animation: fadeIn 0.3s ease forwards; }
+
+/* Splash screen film strip scroll */
+@keyframes filmScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-film-scroll {
+  animation: filmScroll 3s linear infinite;
+  width: max-content;
+}

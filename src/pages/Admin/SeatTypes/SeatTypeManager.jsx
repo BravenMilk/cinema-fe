@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Pagination from '../../../components/Common/Pagination.jsx';
 import { Plus, Search, Edit3, Trash2, Armchair, RefreshCcw, Loader2, DollarSign, Layers ,ChevronLeft, ChevronRight  } from 'lucide-react';
 import BaseModal from '../../../components/Common/BaseModal';
 import NotificationModal from '../../../components/Common/NotificationModal';
@@ -46,48 +47,56 @@ export default function SeatTypeManager() {
     };
 
     return (
-        <div className="p-6 md:p-10 min-h-screen  text-slate-200">
-            <div className="flex flex-col  gap-8 mb-12">
-                <div className="flex items-center gap-3 justify-between">
-                    <div>
-                        <form onSubmit={handleSearch} className="relative group">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
-                            <input
-                                type="text"
-                                placeholder="Cari kategori..."
-                                value={searchInput}
-                                onChange={(e) => setSearchInput(e.target.value)}
-                                className="pl-12 pr-6 py-4 bg-black/20 border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all text-xs font-bold w-64 lg:w-80"
-                            />
-                        </form>
-                    </div>
-                    <div className='flex flex-row gap-4'>
-                        <button onClick={refresh} className="p-4 bg-white/5 border border-white/10 rounded-2xl text-slate-400 hover:text-white hover:bg-white/10 transition-all shadow-xl">
+        <div className="p-6 md:p-10 min-h-screen text-slate-200">
+            <div className="flex flex-col gap-3 mb-10">
+                {/* Row 1: Search */}
+                <div className="flex flex-col gap-3">
+                    <form onSubmit={handleSearch} className="relative w-full group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 transition-colors" />
+                        <input
+                            type="text"
+                            placeholder="Cari kategori..."
+                            value={searchInput}
+                            onChange={(e) => setSearchInput(e.target.value)}
+                            className="w-full pl-12 pr-4 py-4 rounded-2xl focus:outline-none transition-all text-xs font-bold text-white"
+                            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                            onFocus={e => { e.target.style.borderColor = 'rgba(229,9,20,0.5)'; e.target.style.boxShadow = '0 0 0 3px rgba(229,9,20,0.08)'; }}
+                            onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.08)'; e.target.style.boxShadow = 'none'; }}
+                        />
+                    </form>
+                </div>
+                {/* Row 2: Refresh + Add */}
+                <div className="flex items-center gap-3">
+                    <button onClick={refresh} className="p-4 bg-white/5 border border-white/10 rounded-2xl text-slate-400 hover:text-white hover:bg-white/10 transition-all">
                         <RefreshCcw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
-                        </button>
-                        <button onClick={openAddModal} className="flex items-center gap-3 px-6 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl transition-all shadow-lg shadow-indigo-600/20 uppercase tracking-widest text-[10px]">
-                            <Plus className="w-4 h-4" /> Add New Tier
-                        </button>
-                    </div>
+                    </button>
+                    <button
+                        onClick={openAddModal}
+                        className="flex-1 flex items-center justify-center gap-3 px-6 py-4 text-white font-black rounded-2xl transition-all uppercase tracking-widest text-[10px]"
+                        style={{ background: '#e50914', boxShadow: '0 8px 24px rgba(229,9,20,0.2)' }}
+                        onMouseEnter={e => e.currentTarget.style.background = '#ff1a1a'}
+                        onMouseLeave={e => e.currentTarget.style.background = '#e50914'}>
+                        <Plus className="w-4 h-4" /> Add New Tier
+                    </button>
                 </div>
             </div>
 
             {loading && types.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-40">
-                    <Loader2 className="w-12 h-12 text-indigo-500 animate-spin mb-4" />
+                    <Loader2 className="w-12 h-12 animate-spin mb-4" style={{ color: '#e50914' }} />
                     <span className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-600">Populating Tiers...</span>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {types.map((type, index) => (
-                        <div key={type.id} className="group relative bg-white/8 border border-white/10 rounded-2xl p-8 hover:bg-[#1e293b]/60 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-indigo-500/10">
+                        <div key={type.id} className="group relative bg-white/8 border border-white/10 rounded-2xl p-8 hover:bg-[#1e293b]/60 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/20">
                             <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-20 transition-opacity">
                                 <Layers className="w-20 h-20 text-white" />
                             </div>
 
                             <div className="relative">
                                 <div className="flex justify-between items-start mb-6">
-                                    <div className="text-[10px] font-black text-indigo-500 bg-indigo-500/10 px-3 py-1 rounded-full uppercase tracking-tighter">
+                                    <div className="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter" style={{ color: '#e50914', background: 'rgba(229,9,20,0.08)' }}>
                                         Tier 0{index + 1}
                                     </div>
                                     <div className="flex gap-2">
@@ -100,7 +109,7 @@ export default function SeatTypeManager() {
                                     </div>
                                 </div>
 
-                                <h3 className="text-2xl font-black text-white uppercase italic tracking-tight group-hover:text-indigo-400 transition-colors mb-2">
+                                <h3 className="text-2xl font-black text-white uppercase italic tracking-tight transition-colors mb-2">
                                     {type.name}
                                 </h3>
                                 
@@ -130,43 +139,7 @@ export default function SeatTypeManager() {
                 </div>
             )}
 
-            <div className="p-8  flex flex-row items-center justify-center gap-6">
-                <div className="flex items-center gap-2">
-                    <button disabled={page === 1 || loading} onClick={() => setPage(page - 1)} className="p-3 bg-white/5 border border-white/50 rounded-xl text-slate-400 hover:text-white hover:bg-indigo-600 disabled:opacity-10 disabled:hover:bg-white/5 transition-all group">
-                            <ChevronLeft className="w-4 h-4 group-active:-translate-x-1 transition-transform" />
-                    </button>
-                    <div className="hidden md:flex items-center gap-2 bg-black/20 p-1.5 rounded-2xl border border-white/5">
-                        {[...Array(meta.last_page)].map((_, i) => {
-                            const pageNum = i + 1;
-                            if (
-                                pageNum === 1 || 
-                                pageNum === meta.last_page || 
-                                (pageNum >= page - 1 && pageNum <= page + 1)
-                            ) {
-                                return (
-                                    <button
-                                        key={pageNum}
-                                        onClick={() => setPage(pageNum)}
-                                        className={`w-10 h-10 rounded-xl text-[10px] font-black transition-all ${
-                                            page === pageNum
-                                                ? 'bg-white/50 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)]'
-                                                : 'text-slate-500 hover:text-white hover:bg-white/5'
-                                        }`}
-                                    >
-                                        {pageNum}
-                                    </button>
-                                );
-                            } else if (pageNum === page - 2 || pageNum === page + 2) {
-                                return <span key={pageNum} className="text-slate-700">...</span>;
-                            }
-                            return null;
-                        })}
-                    </div>
-                    <button disabled={page >= meta.last_page || loading} onClick={() => setPage(page + 1)} className="p-3 bg-white/5 border border-white/50 rounded-xl text-slate-400 hover:text-white hover:bg-indigo-600 disabled:opacity-10 disabled:hover:bg-white/5 transition-all group">
-                        <ChevronRight className="w-4 h-4 group-active:translate-x-1 transition-transform" />
-                    </button>
-                </div>
-            </div>
+            <Pagination page={page} lastPage={meta.last_page} onPageChange={setPage} loading={loading} />
 
             <BaseModal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} title={selectedType ? 'Modify Tier' : 'Create Tier'} maxWidth="max-w-md">
                 <SeatTypeForm initialData={selectedType} onSubmit={onFormSubmit} onCancel={() => setIsFormOpen(false)} loading={loading}/>

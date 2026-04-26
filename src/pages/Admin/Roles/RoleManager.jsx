@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Pagination from '../../../components/Common/Pagination.jsx';
 import { Plus, Search, Edit3, Trash2, ShieldCheck, RefreshCcw, Loader2, Users , ChevronLeft,ChevronRight} from 'lucide-react';
 import BaseModal from '../../../components/Common/BaseModal';
 import NotificationModal from '../../../components/Common/NotificationModal';
@@ -96,24 +97,24 @@ export default function RoleManager() {
 
     return (
         <div className="p-6 md:p-10 min-h-screen">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-                <div className='flex flex-row gap-4'>
-                    <form onSubmit={handleSearch} className="relative w-full md:w-80 group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+            <div className="flex flex-col gap-3 mb-10">
+                <div className='flex flex-col gap-3'>
+                    <form onSubmit={handleSearch} className="relative w-full group">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 transition-colors" />
                     <input
                         type="text"
                         placeholder="Cari nama role..."
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
-                        className="w-full pl-12 pr-4 py-4 bg-black/20 border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all text-xs font-medium text-white"
+                        className="w-full pl-12 pr-4 py-4 rounded-2xl focus:outline-none transition-all text-xs font-medium text-white" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }} onFocus={e => { e.target.style.borderColor = 'rgba(229,9,20,0.5)'; e.target.style.boxShadow = '0 0 0 3px rgba(229,9,20,0.08)'; }} onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.08)'; e.target.style.boxShadow = 'none'; }}
                     />
                 </form>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <button onClick={refresh} className="p-4 bg-white/5 border border-white/10 rounded-2xl text-slate-400 hover:text-white hover:bg-white/10 transition-all" title="Refresh Data">
                         <RefreshCcw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
                     </button>
-                    <button onClick={openAddModal} className="flex items-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl transition-all shadow-xl shadow-indigo-600/20 uppercase tracking-widest text-[10px]">
+                    <button onClick={openAddModal} className="flex-1 flex items-center justify-center gap-3 px-6 py-4 text-white font-black rounded-2xl transition-all uppercase tracking-widest text-[10px]" style={{ background: '#e50914', boxShadow: '0 8px 24px rgba(229,9,20,0.2)' }} onMouseEnter={e => e.currentTarget.style.background = '#ff1a1a'} onMouseLeave={e => e.currentTarget.style.background = '#e50914'}>
                         <Plus className="w-4 h-4" />
                         Tambah Role
                     </button>
@@ -122,7 +123,7 @@ export default function RoleManager() {
 
             {loading && roles.length === 0 ? (
                 <div className="py-20 text-center">
-                    <Loader2 className="w-12 h-12 text-indigo-500 animate-spin mx-auto mb-4" />
+                    <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4" style={{ color: '#e50914' }} />
                     <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest animate-pulse">Scanning Security Clearance...</p>
                 </div>
             ) : roles.length === 0 ? (
@@ -132,11 +133,11 @@ export default function RoleManager() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {roles.map((role, index) => (
-                        <div key={role.id} className="group relative bg-white/8 border border-white/10 rounded-3xl p-6 hover:bg-white/[0.08] hover:border-indigo-500/50 transition-all duration-300 shadow-xl">
+                        <div key={role.id} className="group relative bg-white/8 border border-white/10 rounded-3xl p-6 hover:bg-white/[0.08] hover:border-red-500/20 transition-all duration-300 shadow-xl">
                             <div className="flex flex-col gap-4">
                                 <div className='flex items-center justify-center'>
-                                    <div className="p-3 bg-indigo-500/10 rounded-2xl w-fit ">
-                                        <ShieldCheck className="w-6 h-6 text-indigo-400" />
+                                    <div className="p-3 rounded-2xl w-fit" style={{ background: 'rgba(229,9,20,0.08)' }}>
+                                        <ShieldCheck className="w-6 h-6" style={{ color: '#e50914' }} />
                                     </div>
                                 </div>
                                 
@@ -150,7 +151,7 @@ export default function RoleManager() {
                                 <div className="pt-4 border-t border-white/5 flex items-center justify-between gap-3">
                                     <span className="text-[10px] text-slate-600 font-bold">ACTIONS</span>
                                     <div className="flex items-center gap-2">
-                                        <button onClick={() => openEditModal(role)} className="p-2.5 bg-indigo-500/10 hover:bg-indigo-500 text-indigo-400 hover:text-white rounded-xl transition-all active:scale-90">
+                                        <button onClick={() => openEditModal(role)} className="p-2.5 rounded-xl transition-all active:scale-90" style={{ background: 'rgba(229,9,20,0.08)', color: '#e50914' }} onMouseEnter={e => { e.currentTarget.style.background = '#e50914'; e.currentTarget.style.color = '#fff'; }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(229,9,20,0.08)'; e.currentTarget.style.color = '#e50914'; }}>
                                             <Edit3 className="w-4 h-4" />
                                         </button>
                                         <button onClick={() => openDeleteConfirm(role)} className="p-2.5 bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white rounded-xl transition-all active:scale-90">
@@ -163,43 +164,7 @@ export default function RoleManager() {
                     ))}
                 </div>
             )}
-            <div className="p-8  flex flex-row items-center justify-center gap-6">
-                <div className="flex items-center gap-2">
-                    <button disabled={page === 1 || loading} onClick={() => setPage(page - 1)} className="p-3 bg-white/5 border border-white/50 rounded-xl text-slate-400 hover:text-white hover:bg-indigo-600 disabled:opacity-10 disabled:hover:bg-white/5 transition-all group">
-                            <ChevronLeft className="w-4 h-4 group-active:-translate-x-1 transition-transform" />
-                    </button>
-                    <div className="hidden md:flex items-center gap-2 bg-black/20 p-1.5 rounded-2xl border border-white/5">
-                        {[...Array(meta.last_page)].map((_, i) => {
-                            const pageNum = i + 1;
-                            if (
-                                pageNum === 1 || 
-                                pageNum === meta.last_page || 
-                                (pageNum >= page - 1 && pageNum <= page + 1)
-                            ) {
-                                return (
-                                    <button
-                                        key={pageNum}
-                                        onClick={() => setPage(pageNum)}
-                                        className={`w-10 h-10 rounded-xl text-[10px] font-black transition-all ${
-                                            page === pageNum
-                                                ? 'bg-white/50 text-white shadow-[0_0_15px_rgba(79,70,229,0.4)]'
-                                                : 'text-slate-500 hover:text-white hover:bg-white/5'
-                                        }`}
-                                    >
-                                        {pageNum}
-                                    </button>
-                                );
-                            } else if (pageNum === page - 2 || pageNum === page + 2) {
-                                return <span key={pageNum} className="text-slate-700">...</span>;
-                            }
-                            return null;
-                        })}
-                    </div>
-                    <button disabled={page >= meta.last_page || loading} onClick={() => setPage(page + 1)} className="p-3 bg-white/5 border border-white/50 rounded-xl text-slate-400 hover:text-white hover:bg-indigo-600 disabled:opacity-10 disabled:hover:bg-white/5 transition-all group">
-                        <ChevronRight className="w-4 h-4 group-active:translate-x-1 transition-transform" />
-                    </button>
-                </div>
-            </div>
+            <Pagination page={page} lastPage={meta.last_page} onPageChange={setPage} loading={loading} />
             <BaseModal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} title={selectedRole ? 'Edit Data Role' : 'Daftarkan Role Baru'} maxWidth="max-w-md">
                 <RoleForm initialData={selectedRole} onSubmit={onFormSubmit} onCancel={() => setIsFormOpen(false)} loading={loading}/>
             </BaseModal>

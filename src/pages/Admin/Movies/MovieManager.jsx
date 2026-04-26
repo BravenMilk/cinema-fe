@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Pagination from '../../../components/Common/Pagination.jsx';
 import { Plus, Search, Edit3, Trash2, RefreshCcw, Loader2, Clock, Calendar, ChevronRight, ChevronLeft } from 'lucide-react';
 import BaseModal from '../../../components/Common/BaseModal';
 import NotificationModal from '../../../components/Common/NotificationModal';
@@ -63,9 +64,9 @@ export default function MovieManager() {
     };
 
     return (
-        <div className="p-6 md:p-10 min-h-screen">
+        <div className="p-6 md:p-10 min-h-screen pb-32">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-                <div className="flex flex-row gap-4">
+                <div className="flex flex-col md:flex-rows gap-4">
                     <form onSubmit={handleSearch} className="relative w-full md:w-80 group">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors" style={{ color: '#555555' }} />
                         <input
@@ -93,7 +94,7 @@ export default function MovieManager() {
                         <RefreshCcw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
                     </button>
                     <button onClick={openAddModal}
-                        className="flex items-center gap-3 px-6 py-4 font-black rounded-2xl transition-all uppercase tracking-widest text-xs"
+                        className="flex items-center w-full justify-center md:w-auto text-center gap-3 px-6 py-4 font-black rounded-2xl transition-all uppercase tracking-widest text-xs"
                         style={{ background: '#e50914', color: '#ffffff', boxShadow: '0 8px 24px rgba(229,9,20,0.2)' }}
                         onMouseEnter={e => e.currentTarget.style.background = '#ff1a1a'}
                         onMouseLeave={e => e.currentTarget.style.background = '#e50914'}>
@@ -103,7 +104,7 @@ export default function MovieManager() {
                 </div>
             </div>
 
-            <div className="rounded-2xl overflow-hidden shadow-2xl" style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <div className="rounded-2xl overflow-hidden shadow-2xl mb-30" style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -194,43 +195,7 @@ export default function MovieManager() {
             </div>
 
             {/* Pagination */}
-            <div className="p-8 flex flex-row items-center justify-center gap-6">
-                <div className="flex items-center gap-2">
-                    <button disabled={page === 1 || loading} onClick={() => setPage(page - 1)}
-                        className="p-3 rounded-xl transition-all disabled:opacity-20"
-                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#a0a0a0' }}
-                        onMouseEnter={e => { if (page !== 1) { e.currentTarget.style.background = '#e50914'; e.currentTarget.style.color = '#ffffff'; } }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = '#a0a0a0'; }}>
-                        <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <div className="hidden md:flex items-center gap-2 p-1.5 rounded-2xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                        {[...Array(meta.last_page)].map((_, i) => {
-                            const pageNum = i + 1;
-                            if (pageNum === 1 || pageNum === meta.last_page || (pageNum >= page - 1 && pageNum <= page + 1)) {
-                                return (
-                                    <button key={pageNum} onClick={() => setPage(pageNum)}
-                                        className="w-10 h-10 rounded-xl text-xs font-black transition-all"
-                                        style={page === pageNum ? { background: '#e50914', color: '#ffffff' } : { color: '#555555' }}
-                                        onMouseEnter={e => { if (page !== pageNum) e.currentTarget.style.color = '#ffffff'; }}
-                                        onMouseLeave={e => { if (page !== pageNum) e.currentTarget.style.color = '#555555'; }}>
-                                        {pageNum}
-                                    </button>
-                                );
-                            } else if (pageNum === page - 2 || pageNum === page + 2) {
-                                return <span key={pageNum} style={{ color: '#333333' }}>...</span>;
-                            }
-                            return null;
-                        })}
-                    </div>
-                    <button disabled={page >= meta.last_page || loading} onClick={() => setPage(page + 1)}
-                        className="p-3 rounded-xl transition-all disabled:opacity-20"
-                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#a0a0a0' }}
-                        onMouseEnter={e => { if (page < meta.last_page) { e.currentTarget.style.background = '#e50914'; e.currentTarget.style.color = '#ffffff'; } }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = '#a0a0a0'; }}>
-                        <ChevronRight className="w-4 h-4" />
-                    </button>
-                </div>
-            </div>
+            <Pagination page={page} lastPage={meta.last_page} onPageChange={setPage} loading={loading} />
 
             <BaseModal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} title={selectedMovie ? 'Edit Informasi Film' : 'Daftarkan Film Baru'} maxWidth="max-w-3xl">
                 <MovieForm initialData={selectedMovie} onSubmit={onFormSubmit} onCancel={() => setIsFormOpen(false)} loading={loading} />

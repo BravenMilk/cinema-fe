@@ -308,9 +308,12 @@ const CustomerDashboard = ({ user }) => {
 export default function Dashboard() {
   const { user } = useAuth();
   const role = user?.role?.name?.toLowerCase();
+
   switch (role) {
     case 'admin': return <AdminDashboard />;
-    case 'staf': return <StaffDashboard />;
+    case 'staf':
+    case 'staff':
+    case 'petugas': return <StaffDashboard />;
     case 'customer': return <CustomerDashboard user={user} />;
     default: return (
       <div className="flex items-center justify-center min-h-[60vh]">

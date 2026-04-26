@@ -17,10 +17,10 @@ export default function BaseModal({ isOpen, onClose, title, children, maxWidth =
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center p-4 sm:p-6" style={{ zIndex: 99999 }}>
+    <div className="fixed inset-0 flex items-start justify-center p-4 pt-6 sm:p-6 sm:items-center overflow-y-auto" style={{ zIndex: 99999 }}>
       <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.9)', backdropFilter: 'blur(8px)' }} onClick={onClose} />
-      <div className={`relative w-full ${maxWidth} rounded-2xl overflow-hidden flex flex-col animate-fade-in`}
-        style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 40px 100px rgba(0,0,0,0.8)', maxHeight: '90vh', zIndex: 1 }}
+      <div className={`relative w-full ${maxWidth} rounded-2xl overflow-hidden flex flex-col animate-fade-in my-4 sm:my-0`}
+        style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 40px 100px rgba(0,0,0,0.8)', maxHeight: 'calc(100vh - 3rem)', zIndex: 1 }}
         onClick={e => e.stopPropagation()}>
 
         {/* Header */}

@@ -51,7 +51,7 @@ export default function MovieList() {
 
             <MovieDetailModal movie={selectedMovie} loading={loadingDetail} error={errorDetail} isOpen={isOpen} onClose={closeModal} />
 
-            <main className="max-w-7xl mx-auto px-6 py-12 md:px-12">
+            <main className="max-w-7xl mx-auto px-6 py-2 pb-24 md:px-12">
                 {/* Hero section */}
                 {page === 1 && !search && !rating && movies[0] && (
                     <div className="relative w-full h-[500px] md:h-[600px] rounded-3xl overflow-hidden mb-16 group cursor-pointer"

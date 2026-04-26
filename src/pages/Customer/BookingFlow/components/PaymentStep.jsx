@@ -108,9 +108,10 @@ export default function PaymentStep({ bookingData, onPrev, onComplete }) {
         );
     }
 
-    const localSimulationUrl = `http://localhost:8000/api/payment/simulate/${booking?.booking_code}`;
-    const publicBaseUrl = "https://undeterrably-unpersonalizing-gannon.ngrok-free.dev";
-    const qrTargetUrl = `${publicBaseUrl}/api/payment/simulate/${booking?.booking_code}`;
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api';
+    const mainDomain = apiBaseUrl.replace(/\/api$/, '');
+    const qrTargetUrl = `${mainDomain}/api/payment/simulate/${booking?.booking_code}`;
+    const localSimulationUrl = qrTargetUrl;
     const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrTargetUrl)}`;
 
     return (

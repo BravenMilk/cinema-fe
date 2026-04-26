@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import { Loader2, Info, Play, ChevronRight, Search, SlidersHorizontal, ChevronLeft, Clapperboard } from "lucide-react";
+import { Loader2, ChevronRight, Search, SlidersHorizontal, ChevronLeft, Clapperboard, Sparkles } from "lucide-react";
 import PublicHeader from "../../../components/Global/PublicHeader";
 import MovieDetailModal from "../../../components/Global/Movies/MovieDetailModal";
 import { useMovies } from "../../../hooks/global/Movies/useMovies";
 import { useMovieDetail } from "../../../hooks/global/Movies/useMovieDetail";
+import { useLatestMovies } from "../../../hooks/global/Movies/useLatestMovies";
 
 export default function MovieList() {
     const { movies, loading, error, meta, page, search, rating, setSearch, setRating, setPage } = useMovies();
     const { movie: selectedMovie, loading: loadingDetail, error: errorDetail, isOpen, fetchMovieDetail, closeModal } = useMovieDetail();
+    const { movies: latestMovies, loading: loadingLatest } = useLatestMovies(8);
     const [searchInput, setSearchInput] = useState(search);
     const [isOpenRating, setIsOpenRating] = useState(false);
+    const scrollRef = useRef(null);
     const location = useLocation();
 
     useEffect(() => {
@@ -52,47 +55,77 @@ export default function MovieList() {
             <MovieDetailModal movie={selectedMovie} loading={loadingDetail} error={errorDetail} isOpen={isOpen} onClose={closeModal} />
 
             <main className="max-w-7xl mx-auto px-6 py-2 pb-24 md:px-12">
-                {/* Hero section */}
-                {page === 1 && !search && !rating && movies[0] && (
-                    <div className="relative w-full h-[500px] md:h-[600px] rounded-3xl overflow-hidden mb-16 group cursor-pointer"
-                        style={{ boxShadow: '0 32px 80px rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.06)' }}
-                        onClick={() => handleOpenDetail(movies[0].id)}>
-                        <img
-                            src={movies[0].poster_url || "https://images.unsplash.com/photo-1485846234645-a62644f84728"}
-                            alt={movies[0].title}
-                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                            onError={(e) => { e.target.onerror = null; e.target.src = "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=2000"; }}
-                        />
-                        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #0a0a0a 0%, rgba(10,10,10,0.4) 50%, transparent 100%)' }} />
-                        <div className="absolute bottom-0 left-0 p-8 md:p-16 max-w-3xl">
-                            <div className="flex items-center gap-3 mb-5">
-                                <span className="px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest" style={{ background: '#e50914', color: '#ffffff' }}>
-                                    Featured Movie
-                                </span>
-                                <span className="px-4 py-1.5 rounded-full text-xs font-black uppercase border" style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)', borderColor: 'rgba(255,255,255,0.2)', color: '#ffffff' }}>
-                                    {movies[0].rating || 'R13'}
-                                </span>
-                            </div>
-                            <h2 className="text-5xl md:text-7xl font-black mb-8 leading-tight tracking-tighter uppercase">{movies[0].title}</h2>
-                            <div className="flex flex-wrap gap-4">
-                                <button className="px-8 py-4 font-black rounded-2xl flex items-center transition-all uppercase tracking-widest text-xs"
-                                    style={{ background: '#e50914', color: '#ffffff' }}
-                                    onMouseEnter={e => e.currentTarget.style.background = '#ff1a1a'}
-                                    onMouseLeave={e => e.currentTarget.style.background = '#e50914'}>
-                                    <Play className="w-5 h-5 mr-3 fill-current" /> Tonton Trailer
-                                </button>
-                                <button
-                                    className="px-8 py-4 font-black rounded-2xl flex items-center transition-all uppercase tracking-widest text-xs"
-                                    style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.15)', color: '#ffffff' }}
-                                    onClick={(e) => { e.stopPropagation(); handleOpenDetail(movies[0].id); }}
-                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
-                                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}>
-                                    <Info className="w-5 h-5 mr-3" /> Detail Film
-                                </button>
-                            </div>
+
+                {/* Section Terbaru */}
+                {!search && !rating && (
+                    <div className="mb-2">
+                        <div className="flex items-center gap-3 mb-5">
+                            <h2 className="text-xl font-black uppercase tracking-widest" style={{ color: '#ffffff' }}>Recomendasi</h2>
                         </div>
+
+                        {loadingLatest ? (
+                            <div className="flex gap-4 overflow-hidden">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                    <div key={i} className="flex-shrink-0 w-36 md:w-44 aspect-[2/3] rounded-2xl animate-pulse"
+                                        style={{ background: 'rgba(255,255,255,0.06)' }} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="relative">
+                                <div ref={scrollRef}
+                                    className="flex gap-4 overflow-x-auto pb-3"
+                                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                                    {latestMovies.map((movie) => (
+                                        <div key={movie.id}
+                                            className="flex-shrink-0 w-36 md:w-44 group cursor-pointer"
+                                            onClick={() => handleOpenDetail(movie.id)}>
+                                            <div className="relative aspect-[2/3] rounded-2xl overflow-hidden shadow-xl transition-all duration-300"
+                                                style={{ border: '1px solid rgba(255,255,255,0.06)' }}
+                                                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(229,9,20,0.5)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
+                                                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.transform = 'translateY(0)'; }}>
+                                                <img
+                                                    src={movie.poster_url || "https://images.unsplash.com/photo-1440404653325-ab127d49abc1"}
+                                                    alt={movie.title}
+                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                    onError={(e) => { e.target.onerror = null; e.target.src = "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?q=80&w=600"; }}
+                                                />
+                                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3"
+                                                    style={{ background: 'linear-gradient(to top, rgba(10,10,10,0.9), transparent)' }}>
+                                                    <span className="w-full text-center text-xs font-black uppercase tracking-widest py-2 rounded-xl"
+                                                        style={{ background: '#e50914', color: '#fff' }}>Detail</span>
+                                                </div>
+                                                <div className="absolute top-2 right-2 px-2 py-0.5 rounded-lg text-xs font-black uppercase"
+                                                    style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                                    {movie.rating || 'SU'}
+                                                </div>
+                                            </div>
+                                            <p className="mt-2 text-xs font-black uppercase text-center line-clamp-1 tracking-wide" style={{ color: '#ffffff' }}>
+                                                {movie.title}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
+
+                {page === 1 && !search && !rating && (latestMovies[0] || movies[0]) && (() => {
+                    const heroMovie = latestMovies[0] || movies[0];
+                    return (
+                        <div className="relative w-full h-[500px] md:h-[600px] rounded-3xl overflow-hidden mb-16 group cursor-pointer"
+                            style={{ boxShadow: '0 32px 80px rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.06)' }}
+                            onClick={() => handleOpenDetail(heroMovie.id)}>
+                            <img
+                                src={heroMovie.poster_url || "https://images.unsplash.com/photo-1485846234645-a62644f84728"}
+                                alt={heroMovie.title}
+                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                                onError={(e) => { e.target.onerror = null; e.target.src = "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=2000"; }}
+                            />
+                            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #0a0a0a 0%, rgba(10,10,10,0.4) 50%, transparent 100%)' }} />
+                        </div>
+                    );
+                })()}
 
                 {/* Search & filter */}
                 <div className="mb-10 flex flex-col md:flex-row gap-5 items-center">
@@ -173,8 +206,8 @@ export default function MovieList() {
                 ) : (
                     <>
                         <div className="mb-8 flex items-center justify-between">
-                            <h3 className="text-2xl font-black tracking-tight uppercase flex items-center gap-3">
-                                {search || rating ? 'Search Results' : 'Recommended'}
+                            <h3 className="text-lg font-black tracking-tight uppercase flex items-center gap-3">
+                                {search || rating ? 'Search Results' : 'Recomendasi Lainya'}
                                 <span className="text-xs font-black py-1 px-3 rounded-lg normal-case not-italic tracking-widest"
                                     style={{ background: 'rgba(255,255,255,0.05)', color: '#555555' }}>
                                     {meta.total} ITEMS
